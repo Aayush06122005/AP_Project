@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.audio.Music;
@@ -18,9 +20,10 @@ public class Profile implements Screen {
     FitViewport ourViewPort;
     private Texture crossbtn;
     private Texture editbtn;
+    private World ourWorld;
+    private Box2DDebugRenderer debuggerRenderer;
 
-
-    public Profile(final Mygame gameI){
+    public Profile(final Mygame gameI,World oW, Box2DDebugRenderer dR){
         this.gameInstance = gameI;
         myCamera = new OrthographicCamera();
         myCamera.setToOrtho(false,800,400);
@@ -30,6 +33,8 @@ public class Profile implements Screen {
         ourViewPort = new FitViewport(800, 400, myCamera);
         crossbtn=new Texture("cross.png");
         editbtn=new Texture("editIcon.png");
+        ourWorld = oW;
+        debuggerRenderer = dR;
 //        gameInstance.textWriter.getData().setScale(2.0f);
 //        gameInstance.textWriter.setColor(Color.BLACK);
     }
@@ -60,7 +65,7 @@ public class Profile implements Screen {
             Vector3 coordinatesMouseInp = new Vector3(x, y, 0);
             myCamera.unproject(coordinatesMouseInp);
             if (coordinatesMouseInp.x > 700 && coordinatesMouseInp.x < 700 +(ourViewPort.getWorldWidth())/10 && coordinatesMouseInp.y > 320 && coordinatesMouseInp.y < 320 + (ourViewPort.getWorldHeight())/6) {
-                gameInstance.setScreen(new MainMenu(gameInstance));
+                gameInstance.setScreen(new MainMenu(gameInstance,ourWorld,debuggerRenderer));
                 dispose();
             }
         }

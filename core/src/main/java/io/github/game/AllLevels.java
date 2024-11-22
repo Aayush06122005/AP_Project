@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.audio.Music;
@@ -22,8 +24,9 @@ public class AllLevels implements Screen {
     private Texture Level2btn;
     private Texture Level3btn;
     private Texture selectALevel;
-
-    public AllLevels(final Mygame gameI){
+    private World ourWorld;
+    private Box2DDebugRenderer debuggerRenderer;
+    public AllLevels(final Mygame gameI,World oW, Box2DDebugRenderer dR){
         this.gameInstance = gameI;
         myCamera = new OrthographicCamera();
         myCamera.setToOrtho(false,800,400);
@@ -37,6 +40,8 @@ public class AllLevels implements Screen {
         Level2btn=new Texture("Level2.png");
         Level3btn=new Texture("Level3.png");
         selectALevel = new Texture("SelectLevel.png");
+        ourWorld = oW;
+        debuggerRenderer = dR;
     }
 
     @Override
@@ -61,11 +66,11 @@ public class AllLevels implements Screen {
             Vector3 coordinatesMouseInp = new Vector3(x, y, 0);
             myCamera.unproject(coordinatesMouseInp);
             if (coordinatesMouseInp.x > 230 && coordinatesMouseInp.x < 230 +(ourViewPort.getWorldWidth())/10 && coordinatesMouseInp.y > 200 && coordinatesMouseInp.y < 200 + (ourViewPort.getWorldHeight())/6) {
-                gameInstance.setScreen(new GameScreen(gameInstance));
+                gameInstance.setScreen(new GameScreen(gameInstance,ourWorld,debuggerRenderer));
                 dispose();
             }
             if (coordinatesMouseInp.x > 750 && coordinatesMouseInp.x < 750 +(ourViewPort.getWorldWidth())/18 && coordinatesMouseInp.y > 355 && coordinatesMouseInp.y < 355 + (ourViewPort.getWorldHeight())/10) {
-                gameInstance.setScreen(new MainMenu(gameInstance));
+                gameInstance.setScreen(new MainMenu(gameInstance,ourWorld,debuggerRenderer));
                 dispose();
             }
         }

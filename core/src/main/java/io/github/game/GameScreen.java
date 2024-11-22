@@ -4,7 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.audio.Music;
@@ -46,10 +49,11 @@ public class GameScreen implements Screen {
     private Pig2 pig2;
     private Pig3 pig3;
     private Pig1 pig4;
+    private World ourWorld;
+    private Box2DDebugRenderer debuggerRenderer;
 
 
-
-    public GameScreen(final Mygame gameI) {
+    public GameScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR) {
        myCamera = new OrthographicCamera();
        myCamera.setToOrtho(false, 800, 400);
        ourViewPort = new FitViewport(800, 400, myCamera);
@@ -60,11 +64,11 @@ public class GameScreen implements Screen {
        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.mp3"));
        backgroundMusic.setLooping(true);
        catapultInst = new Catapult(new Texture("catapault.png"), 2 * (ourViewPort.getWorldWidth() / 10), ourViewPort.getWorldHeight() / 4, 50, 100, gameInstance);
-       bird1 = new BlueBird(0, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance);
-       bird2 = new YellowBird(45, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance);
-       bird3 = new RedBird(90, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance);
-       bird4 = new YellowBird(135, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance);
-       bird5 = new BlueBird(2 * (ourViewPort.getWorldWidth() / 10) + 2, ourViewPort.getWorldHeight() / 4 + 75, 40, 40, gameInstance);
+       bird1 = new BlueBird(0, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
+       bird2 = new YellowBird(45, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
+       bird3 = new RedBird(90, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
+       bird4 = new YellowBird(135, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
+       bird5 = new BlueBird(2 * (ourViewPort.getWorldWidth() / 10) + 2, ourViewPort.getWorldHeight() / 4 + 75, 40, 40, gameInstance,ourWorld);
        BaseBlock1 = new TriangularBlock("wooden", 675 - 178, ourViewPort.getWorldHeight() / 4, 70, 70, gameInstance);
        BaseBlock2 = new TriangularBlock("wooden", 728 + 20 + 8 - 170, ourViewPort.getWorldHeight() / 4, 70, 70, gameInstance);
        BaseBlock3 = new TriangularBlock("wooden", 781 + 40 + 16 - 170, ourViewPort.getWorldHeight() / 4, 70, 70, gameInstance);
@@ -77,6 +81,8 @@ public class GameScreen implements Screen {
         pig1 = new Pig1(545,ourViewPort.getWorldHeight() / 4 + 101,20,20,gameInstance);
         pig2 = new Pig2(670,ourViewPort.getWorldHeight() / 4 + 90,30,30,gameInstance);
         pig3 = new Pig3(781 + 40 + 16 - 170 + 80,ourViewPort.getWorldHeight() / 4,30,30,gameInstance);
+        ourWorld = oW;
+        debuggerRenderer = dR;
     }
     @Override
     public void render(float delta) {
@@ -105,23 +111,21 @@ public class GameScreen implements Screen {
         pig2.addPigOnScreen();
         pig3.addPigOnScreen();
        gameInstance.ourSpriteBatch.end();
-
-
         if (Gdx.input.isTouched()) {
             int x = Gdx.input.getX();
             int y = Gdx.input.getY();
             Vector3 coordinatesMouseInp = new Vector3(x, y, 0);
             myCamera.unproject(coordinatesMouseInp);
             if (coordinatesMouseInp.x > 5 && coordinatesMouseInp.x < 45 && coordinatesMouseInp.y > ourViewPort.getWorldHeight() - 50 && coordinatesMouseInp.y < ourViewPort.getWorldHeight() - 10) {
-                gameInstance.setScreen(new PauseScreen(gameInstance)); // replace with your actual settings screen
+                gameInstance.setScreen(new PauseScreen(gameInstance,ourWorld,debuggerRenderer)); // replace with your actual settings screen
                 dispose();
             }
             if (coordinatesMouseInp.x > 50 && coordinatesMouseInp.x < 100 && coordinatesMouseInp.y > ourViewPort.getWorldHeight() - 50 && coordinatesMouseInp.y < ourViewPort.getWorldHeight() - 10) {
-                gameInstance.setScreen(new WinningScreen(gameInstance)); // replace with your actual settings screen
+                gameInstance.setScreen(new WinningScreen(gameInstance,ourWorld,debuggerRenderer)); // replace with your actual settings screen
                 dispose();
             }
             if (coordinatesMouseInp.x > 110 && coordinatesMouseInp.x < 160 && coordinatesMouseInp.y > ourViewPort.getWorldHeight() - 50 && coordinatesMouseInp.y < ourViewPort.getWorldHeight() - 10) {
-                gameInstance.setScreen(new LosingScreen(gameInstance)); // replace with your actual settings screen
+                gameInstance.setScreen(new LosingScreen(gameInstance,ourWorld,debuggerRenderer)); // replace with your actual settings screen
                 dispose();
             }
         }
@@ -150,5 +154,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+
     }
 }

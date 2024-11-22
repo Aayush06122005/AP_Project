@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.audio.Music;
@@ -19,9 +21,10 @@ public class LosingScreen  implements Screen {
     private Texture crossbtn;
     private Texture Losingimg;
     // private Texture Staricon;
+    private World ourWorld;
+    private Box2DDebugRenderer debuggerRenderer;
 
-
-    public LosingScreen(final Mygame gameI){
+    public LosingScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR){
         this.gameInstance = gameI;
         myCamera = new OrthographicCamera();
         myCamera.setToOrtho(false,800,400);
@@ -32,6 +35,8 @@ public class LosingScreen  implements Screen {
         crossbtn=new Texture("cross.png");
         // Staricon=new Texture("starIcon.png");
         Losingimg=new Texture("youLose.png");
+        ourWorld = oW;
+        debuggerRenderer = dR;
     }
 
     @Override
@@ -59,7 +64,7 @@ public class LosingScreen  implements Screen {
             Vector3 coordinatesMouseInp = new Vector3(x, y, 0);
             myCamera.unproject(coordinatesMouseInp);
             if (coordinatesMouseInp.x > 700 && coordinatesMouseInp.x < 700 +(ourViewPort.getWorldWidth())/10 && coordinatesMouseInp.y > 320 && coordinatesMouseInp.y < 320 + (ourViewPort.getWorldHeight())/6) {
-                gameInstance.setScreen(new MainMenu(gameInstance));
+                gameInstance.setScreen(new MainMenu(gameInstance,ourWorld,debuggerRenderer));
                 dispose();
             }
         }

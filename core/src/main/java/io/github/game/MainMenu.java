@@ -5,6 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.audio.Music;
@@ -27,8 +29,9 @@ public class MainMenu implements Screen {
     private RedBird birdForProfileBtn;
     private Texture PlayerName;
     ShapeRenderer shapeMaker;
-
-    public MainMenu(final Mygame gameI){
+    private World ourWorld;
+    private Box2DDebugRenderer debuggerRenderer;
+    public MainMenu(final Mygame gameI,World oW, Box2DDebugRenderer dR){
         myCamera = new OrthographicCamera();
         myCamera.setToOrtho(false,800,400);
         ourViewPort = new FitViewport(800, 400, myCamera);
@@ -36,16 +39,19 @@ public class MainMenu implements Screen {
         shapeMaker = new ShapeRenderer();
         bgimgGround = new Texture("ground.png");
         bgimgSpace = new Texture("space.jpg");
+        ourWorld = oW;
+        debuggerRenderer = dR;
 //        bgimg = new Texture("background.jpg");
         Playbtn = new Texture("PlayBtn.png");
 //        Profilebtn = new Texture("angryBird1.png");
-        birdForProfileBtn = new RedBird(0,340,(ourViewPort.getWorldWidth())/12,(ourViewPort.getWorldHeight())/7,gameInstance);
+        birdForProfileBtn = new RedBird(0,340,(ourViewPort.getWorldWidth())/12,(ourViewPort.getWorldHeight())/7,gameInstance,ourWorld);
         PlayerName = new Texture("PlayerName.png");
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.mp3"));
         backgroundMusic.setLooping(true);
         Settingbtn=new Texture("SettingBtn.png");
         Exitbtn = new Texture("ExitBtn.png");
         gameInstance.textWriter.setColor(Color.BLACK);
+
     }
 
     @Override
@@ -75,15 +81,15 @@ public class MainMenu implements Screen {
                 Gdx.app.exit();
             }
             if (coordinatesMouseInp.x > 320 && coordinatesMouseInp.x < 320 +(ourViewPort.getWorldWidth())/5 && coordinatesMouseInp.y > 160 && coordinatesMouseInp.y < 160 + (ourViewPort.getWorldHeight()) / 8) {
-                gameInstance.setScreen(new Settings(gameInstance)); // replace with your actual settings screen
+                gameInstance.setScreen(new Settings(gameInstance,ourWorld,debuggerRenderer)); // replace with your actual settings screen
                 dispose();
             }
             if (coordinatesMouseInp.x > 320 && coordinatesMouseInp.x < 320 +(ourViewPort.getWorldWidth())/5 && coordinatesMouseInp.y > 220 && coordinatesMouseInp.y < 220 + (ourViewPort.getWorldHeight()) / 8) {
-                gameInstance.setScreen(new AllLevels(gameInstance)); // replace with your actual settings screen
+                gameInstance.setScreen(new AllLevels(gameInstance,ourWorld,debuggerRenderer)); // replace with your actual settings screen
                 dispose();
             }
             if (coordinatesMouseInp.x > 0 && coordinatesMouseInp.x < (ourViewPort.getWorldWidth())/12 + 5 && coordinatesMouseInp.y > 340 && coordinatesMouseInp.y < 340 + (ourViewPort.getWorldHeight())/7) {
-                gameInstance.setScreen(new Profile(gameInstance)); // replace with your actual settings screen
+                gameInstance.setScreen(new Profile(gameInstance,ourWorld,debuggerRenderer)); // replace with your actual settings screen
                 dispose();
             }
         }

@@ -3,6 +3,9 @@ package io.github.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.audio.Music;
@@ -17,7 +20,8 @@ public class LoadingScreen implements Screen {
     final Mygame gameInstance;
     private Music backgroundMusic;
     FitViewport ourViewPort;
-
+    private World ourWorld;
+    private Box2DDebugRenderer debuggerRenderer;
     public LoadingScreen(final Mygame gameI){
         this.gameInstance = gameI;
         myCamera = new OrthographicCamera();
@@ -27,6 +31,8 @@ public class LoadingScreen implements Screen {
         backgroundMusic.setLooping(true);
         ourViewPort = new FitViewport(800, 400, myCamera);
         gameInstance.textWriter.setColor(Color.BLACK);
+        ourWorld = new World(new Vector2(0, -9.8f), true);
+        debuggerRenderer = new Box2DDebugRenderer();
     }
 
     @Override
@@ -39,9 +45,10 @@ public class LoadingScreen implements Screen {
         gameInstance.ourSpriteBatch.draw(backgroundLoadingImage, 0, 0,ourViewPort.getWorldWidth(), ourViewPort.getWorldHeight());
 //        gameInstance.textWriter.draw(gameInstance.ourSpriteBatch, "Tap anywhere to begin!", 325, 70);
         gameInstance.ourSpriteBatch.end();
-
+        ourWorld.step(1 / 60f, 6, 2);
+        debuggerRenderer.render(ourWorld, myCamera.combined);
         if (Gdx.input.justTouched()) {
-            gameInstance.setScreen(new MainMenu(gameInstance));
+            gameInstance.setScreen(new MainMenu(gameInstance,ourWorld,debuggerRenderer));
             dispose();
         }
     }
@@ -70,5 +77,7 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void dispose() {
+        ourWorld.dispose();
+        debuggerRenderer.dispose();
     }
 }
