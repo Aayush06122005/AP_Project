@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.audio.Music;
@@ -51,6 +50,7 @@ public class GameScreen implements Screen {
     private Pig1 pig4;
     private World ourWorld;
     private Box2DDebugRenderer debuggerRenderer;
+    private Body ground;
 
 
     public GameScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR) {
@@ -63,7 +63,10 @@ public class GameScreen implements Screen {
        bgimgSpace = new Texture("space.jpg");
        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.mp3"));
        backgroundMusic.setLooping(true);
+       ourWorld = new World(new Vector2(0, -9.8f), true);
+       debuggerRenderer = new Box2DDebugRenderer();
        catapultInst = new Catapult(new Texture("catapault.png"), 2 * (ourViewPort.getWorldWidth() / 10), ourViewPort.getWorldHeight() / 4, 50, 100, gameInstance);
+
        bird1 = new BlueBird(0, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
        bird2 = new YellowBird(45, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
        bird3 = new RedBird(90, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
@@ -81,8 +84,16 @@ public class GameScreen implements Screen {
         pig1 = new Pig1(545,ourViewPort.getWorldHeight() / 4 + 101,20,20,gameInstance);
         pig2 = new Pig2(670,ourViewPort.getWorldHeight() / 4 + 90,30,30,gameInstance);
         pig3 = new Pig3(781 + 40 + 16 - 170 + 80,ourViewPort.getWorldHeight() / 4,30,30,gameInstance);
-        ourWorld = oW;
-        debuggerRenderer = dR;
+
+
+        BodyDef groundDef = new BodyDef();
+        groundDef.position.set(new Vector2(0,0));
+        ground = ourWorld.createBody(groundDef);
+
+        PolygonShape groundShape = new PolygonShape();
+        groundShape.setAsBox(ourViewPort.getWorldWidth(), 1);
+        ground.createFixture(groundShape, 0.0f);
+        groundShape.dispose();
     }
     @Override
     public void render(float delta) {
@@ -129,6 +140,8 @@ public class GameScreen implements Screen {
                 dispose();
             }
         }
+        ourWorld.step(1 / 60f, 6, 2);
+        debuggerRenderer.render(ourWorld, myCamera.combined);
    }
     @Override
     public void resize(int w, int h) {
