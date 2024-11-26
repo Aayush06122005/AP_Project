@@ -1,9 +1,16 @@
 package io.github.game.BirdsPackage;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import io.github.game.Catapult;
+import io.github.game.GameScreen;
 import io.github.game.Mygame;
+import io.github.game.Player;
 
 public abstract class Birds {
     private Texture imageOfBird;
@@ -22,10 +29,9 @@ public abstract class Birds {
         gameInstance = e;
 
         BodyDef bodyDefiner = new BodyDef();
-        bodyDefiner.type = BodyDef.BodyType.DynamicBody;
+        bodyDefiner.type = BodyDef.BodyType.StaticBody;
         bodyDefiner.position.set(a, b);
         birdBody = ourWorld.createBody(bodyDefiner);
-
         CircleShape birdShape = new CircleShape();
         birdShape.setRadius(length_of_x / 2 / gameInstance.pixelPerMeter);
 
@@ -53,4 +59,26 @@ public abstract class Birds {
             imageOfBird.dispose();
         }
     }
+    public Circle birdBound() {
+        return new Circle(
+            this.getBirdBody().getPosition().x,  // Center X
+            this.getBirdBody().getPosition().y,  // Center Y
+            (float) Math.sqrt(Math.pow(length_of_x / 2, 2) + Math.pow(length_of_y / 2, 2)) // Radius
+        );
+    }
+    public void ifInsideCatapult(Catapult c, OrthographicCamera myCamera){
+        Rectangle boundsToCheck = c.launchBound();
+//        System.out.println("worldClick : " + worldClick.x + " " + worldClick.y );
+        if (boundsToCheck.contains(this.getBirdBody().getPosition().x, this.getBirdBody().getPosition().y)) {
+            System.out.println("Bird inside catapult!");
+            this.getBirdBody().setType(BodyDef.BodyType.StaticBody);
+        }else{
+            if(!GameScreen.birdToched(this,myCamera)){
+                this.getBirdBody().setType(BodyDef.BodyType.DynamicBody);
+            }
+
+        }
+
+    }
+
 }
