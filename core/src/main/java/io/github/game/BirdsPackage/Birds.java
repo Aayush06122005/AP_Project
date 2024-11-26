@@ -38,7 +38,12 @@ public abstract class Birds {
         birdBody.createFixture(fixtureDefine);
         birdShape.dispose();
     }
-
+    public void launch(float ang,float sp){
+        birdBody.setLinearVelocity((float)Math.cos(ang) * sp, (float)Math.sin(ang) * sp);
+    }
+    public Body getBirdBody(){
+        return birdBody;
+    }
     public void addBirdOnScreen(){
         Vector2 birdPosition = birdBody.getPosition();
         gameInstance.ourSpriteBatch.draw(imageOfBird,birdPosition.x * gameInstance.pixelPerMeter -length_of_x/2,birdPosition.y * gameInstance.pixelPerMeter - length_of_y/2,length_of_x,length_of_y);

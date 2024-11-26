@@ -2,10 +2,7 @@ package io.github.game.MaterialsPackage;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import io.github.game.Mygame;
 
 public abstract class Block {
@@ -28,12 +25,18 @@ public abstract class Block {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(a, b);
+        bodyDef.position.set(a + (c/2), b + (d/2));
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(c / 2, d / 2);
-        body.createFixture(shape, 0.0f);
+        shape.setAsBox(c/2 , d/2 );
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0.5f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0.3f;
+        body.createFixture(fixtureDef);
         shape.dispose();
     }
 
@@ -49,5 +52,8 @@ public abstract class Block {
         if(imgToShow!=null){
             imgToShow.dispose();
         }
+    }
+    public Body getBody(){
+        return body;
     }
 }

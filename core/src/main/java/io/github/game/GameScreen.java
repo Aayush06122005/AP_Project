@@ -81,18 +81,24 @@ public class GameScreen implements Screen {
        block1 = new RectangularBlock("steel",470,ourViewPort.getWorldHeight() / 4 + 70,280,20,gameInstance,ourWorld);
         block2 = new SquareBlock("glass",530,ourViewPort.getWorldHeight() / 4 + 90,50,50,gameInstance,ourWorld);
         block3 = new SquareBlock("wood",600,ourViewPort.getWorldHeight() / 4 + 90,50,50,gameInstance,ourWorld);
-        pig1 = new Pig1(545,ourViewPort.getWorldHeight() / 4 + 101,20,20,gameInstance);
-        pig2 = new Pig2(670,ourViewPort.getWorldHeight() / 4 + 90,30,30,gameInstance);
-        pig3 = new Pig3(781 + 40 + 16 - 170 + 80,ourViewPort.getWorldHeight() / 4,30,30,gameInstance);
+        pig1 = new Pig1(545,ourViewPort.getWorldHeight() / 4 + 101,20,20,gameInstance,100,ourWorld);
+        pig2 = new Pig2(670,ourViewPort.getWorldHeight() / 4 + 90,30,30,gameInstance,100,ourWorld);
+        pig3 = new Pig3(781 + 40 + 16 - 170 + 80,ourViewPort.getWorldHeight() / 4,30,30,gameInstance,100,ourWorld);
 
 
         BodyDef groundDef = new BodyDef();
+        groundDef.type = BodyDef.BodyType.StaticBody;
         groundDef.position.set(new Vector2(0,0));
         ground = ourWorld.createBody(groundDef);
 
         PolygonShape groundShape = new PolygonShape();
-        groundShape.setAsBox(ourViewPort.getWorldWidth(), 1);
-        ground.createFixture(groundShape, 0.0f);
+        groundShape.setAsBox(ourViewPort.getWorldWidth(), ourViewPort.getWorldHeight() / 4);
+
+        FixtureDef groundFixture = new FixtureDef();
+        groundFixture.shape = groundShape;
+        groundFixture.density = 1.0f;
+        groundFixture.friction = 0.8f;
+        ground.createFixture(groundShape, 0.5f);
         groundShape.dispose();
     }
     @Override
@@ -140,7 +146,7 @@ public class GameScreen implements Screen {
                 dispose();
             }
         }
-        ourWorld.step(1 / 60f, 6, 2);
+//        ourWorld.step(1 / 60f, 6, 2);
         debuggerRenderer.render(ourWorld, myCamera.combined);
    }
     @Override
@@ -152,7 +158,9 @@ public class GameScreen implements Screen {
     public void show() {
         backgroundMusic.play();
     }
-
+    public void update(float deltaTime) {
+        ourWorld.step(1/60f, 6, 2);
+    }
     @Override
     public void hide() {
     }
@@ -164,7 +172,9 @@ public class GameScreen implements Screen {
     @Override
     public void resume() {
     }
-
+    public World getWorld() {
+        return ourWorld;
+    }
     @Override
     public void dispose() {
 

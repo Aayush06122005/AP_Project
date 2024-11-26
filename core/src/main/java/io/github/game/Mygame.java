@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Mygame extends Game {
     public BitmapFont textWriter;
     public SpriteBatch ourSpriteBatch;
-    public static final float  pixelPerMeter= 100;
+    public static final float  pixelPerMeter= 1;
     @Override
     public void create() {
         ourSpriteBatch = new SpriteBatch();
