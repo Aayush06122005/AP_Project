@@ -75,10 +75,10 @@ public class GameScreen implements Screen {
         debuggerRenderer = new Box2DDebugRenderer();
         catapultInst = new Catapult(new Texture("catapault.png"), 2 * (ourViewPort.getWorldWidth() / 10), ourViewPort.getWorldHeight() / 4, 50, 100, gameInstance);
 
-        bird1 = new BlueBird(0, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
-        bird2 = new YellowBird(45, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
-        bird3 = new RedBird(90, ourViewPort.getWorldHeight() / 4, 40, 40, gameInstance,ourWorld);
-        bird4 = new YellowBird(135, ourViewPort.getWorldHeight() / 4 , 40, 40, gameInstance,ourWorld);
+        bird1 = new BlueBird(25, ourViewPort.getWorldHeight() / 4 + 20, 40, 40, gameInstance,ourWorld);
+        bird2 = new YellowBird(70, ourViewPort.getWorldHeight() / 4 + 20, 40, 40, gameInstance,ourWorld);
+        bird3 = new RedBird(115, ourViewPort.getWorldHeight() / 4 + 20, 40, 40, gameInstance,ourWorld);
+        bird4 = new YellowBird(160, ourViewPort.getWorldHeight() / 4 + 20, 40, 40, gameInstance,ourWorld);
 //       bird5 = new BlueBird(185,175, 40, 40, gameInstance,ourWorld);
         allBirds.add(bird1);
         allBirds.add(bird2);
@@ -235,3 +235,114 @@ public class GameScreen implements Screen {
         ourWorld.step(1 / 60f, 6, 2);
         debuggerRenderer.render(ourWorld, myCamera.combined);
     }
+
+
+    private void launching(Birds b) {
+        if(b.birdState == "launchable"){
+            Vector2 catapultPos = catapultInst.launchBound().getCenter(new Vector2());
+            Vector2 birdPos = animatingBird.getBirdBody().getPosition();
+            Vector2 direction = new Vector2(birdPos.x - catapultPos.x, birdPos.y - catapultPos.y);
+            direction.nor();
+            b.getBirdBody().setType(BodyDef.BodyType.DynamicBody);;
+
+            // Apply force in the opposite direction to launch the bird
+            float birdLaunchPower = 1000000000f;
+
+            animatingBird.getBirdBody().applyLinearImpulse(direction.scl(-birdLaunchPower), birdPos, true);
+//                        animatingBird = null;
+            b.birdState = "launched";
+        }
+    }
+
+    private void dragging(Vector2 maxRange, Birds b) {
+        if(b != null){
+            Vector2 catapultCenter = catapultInst.launchBound().getCenter(new Vector2());
+            Vector3 touchPos = Player.getInput(myCamera);
+            if(touchPos == null){return;}
+            float clampedX = MathUtils.clamp(touchPos.x, catapultCenter.x - maxRange.x, catapultCenter.x + maxRange.x);
+            float clampedY = MathUtils.clamp(touchPos.y, catapultCenter.y - maxRange.y, catapultCenter.y + maxRange.y);
+            // Set bird's position to clamped values
+            b.getBirdBody().setTransform(clampedX, clampedY, 0);
+        }
+    }
+
+    private void birdAnimation() {
+
+        // Current bird position
+        Vector2 currentPos = animatingBird.getBirdBody().getPosition();
+        Vector2 interpolatedPosition = currentPos.lerp(animationTarget, animationTime / totalAnimationDuration);
+
+        // Update bird's position
+        animatingBird.getBirdBody().setTransform(interpolatedPosition, 0);
+
+        // Increment animation time
+        animationTime += Gdx.graphics.getDeltaTime();
+
+        // End animation when complete
+        if (animationTime >= totalAnimationDuration) {
+            animatingBird.getBirdBody().setTransform(animationTarget, 0); // Snap to final position
+            animatingBird.getBirdBody().setType(BodyDef.BodyType.StaticBody);
+            animatingBird.birdState = "loaded";// Make bird static on catapult
+        }
+
+
+    }
+
+    @Override
+    public void resize(int w, int h) {
+        ourViewPort.update(w, h, true);
+    }
+
+    @Override
+    public void show() {
+        backgroundMusic.play();
+    }
+    public void update(float deltaTime) {
+        ourWorld.step(1/60f, 6, 2);
+    }
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+    public World getWorld() {
+        return ourWorld;
+    }
+    @Override
+    public void dispose() {
+
+    }
+
+    public static Boolean birdToched(Birds b,OrthographicCamera myCamera){
+        Vector2 pos = b.getBirdBody().getPosition();
+        Circle boundsToCheck = b.birdBound();
+//        System.out.println("circle : " + boundsToCheck.x + " " + boundsToCheck.y );
+        Vector3 worldClick = Player.getInput(myCamera);
+        if(worldClick == null){
+            return false;
+        }
+
+//        System.out.println("worldClick : " + worldClick.x + " " + worldClick.y );
+        if (boundsToCheck.contains(worldClick.x, worldClick.y)) {
+
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public void launchingBird(){
+        Vector2 catapultPos = catapultInst.launchBound().getCenter(new Vector2());
+        float launchPowFactor = 0.1f;
+
+
+    }
+}
+

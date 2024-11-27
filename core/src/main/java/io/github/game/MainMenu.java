@@ -44,7 +44,7 @@ public class MainMenu implements Screen {
 //        bgimg = new Texture("background.jpg");
         Playbtn = new Texture("PlayBtn.png");
 //        Profilebtn = new Texture("angryBird1.png");
-        birdForProfileBtn = new RedBird(0,340,(ourViewPort.getWorldWidth())/12,(ourViewPort.getWorldHeight())/7,gameInstance,ourWorld);
+        birdForProfileBtn = new RedBird(80,360,(ourViewPort.getWorldWidth())/12,(ourViewPort.getWorldHeight())/7,gameInstance,ourWorld);
         PlayerName = new Texture("PlayerName.png");
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.mp3"));
         backgroundMusic.setLooping(true);
@@ -64,7 +64,7 @@ public class MainMenu implements Screen {
         gameInstance.ourSpriteBatch.draw(bgimgGround, 0, 0,ourViewPort.getWorldWidth(), ourViewPort.getWorldHeight()/4);
         gameInstance.ourSpriteBatch.draw(bgimgSpace, 0, ourViewPort.getWorldHeight()/4 ,ourViewPort.getWorldWidth(), 3 * (ourViewPort.getWorldHeight()/4));
 //        gameInstance.ourSpriteBatch.draw(bgimg, 0, 0,ourViewPort.getWorldWidth(), ourViewPort.getWorldHeight());
-//        gameInstance.ourSpriteBatch.draw(Profilebtn,0 ,340 ,(ourViewPort.getWorldWidth())/12,(ourViewPort.getWorldHeight())/7);
+//        gameInstance.ourSpriteBatch.draw(birdForProfileBtn,80 ,360 ,(ourViewPort.getWorldWidth())/12,(ourViewPort.getWorldHeight())/7);
         birdForProfileBtn.addBirdOnScreen();
         gameInstance.ourSpriteBatch.draw(PlayerName,(ourViewPort.getWorldWidth())/12 + 5,350 ,(ourViewPort.getWorldWidth())/8,(ourViewPort.getWorldHeight())/15);
         gameInstance.ourSpriteBatch.draw(Exitbtn,320 ,100 ,(ourViewPort.getWorldWidth())/5,(ourViewPort.getWorldHeight())/8);
