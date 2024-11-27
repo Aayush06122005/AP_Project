@@ -40,10 +40,11 @@ public abstract class Pig {
         shapePig.dispose();
 
     }
-
-    public void addPigOnScreen(){
-        gameInstance.ourSpriteBatch.draw(imageOfPig,positionX ,positionY ,length_of_x,length_of_y);
-    }
+public void addPigOnScreen() {
+    positionX = body.getPosition().x * gameInstance.pixelPerMeter - length_of_x / 2;
+    positionY = body.getPosition().y * gameInstance.pixelPerMeter - length_of_y / 2;
+    gameInstance.ourSpriteBatch.draw(imageOfPig, positionX, positionY, length_of_x, length_of_y);
+}
     public void disposePig(){
         if(imageOfPig!=null){
             imageOfPig.dispose();

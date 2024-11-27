@@ -24,7 +24,7 @@ public abstract class Block {
         imgToShow = new Texture("space.jpg");
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(a + (c/2), b + (d/2));
         body = world.createBody(bodyDef);
 
@@ -44,10 +44,13 @@ public abstract class Block {
         this.imgToShow = aa;
     }
 
-    public void addToScreen(){
-        Vector2 position = body.getPosition();
-        gameInstance.ourSpriteBatch.draw(imgToShow,positionX ,positionY ,length_of_x,length_of_y);
-    }
+ public void addToScreen() {
+    Vector2 position = body.getPosition();
+    positionX = position.x * gameInstance.pixelPerMeter - length_of_x / 2;
+    positionY = position.y * gameInstance.pixelPerMeter - length_of_y / 2;
+    float angle = (float) Math.toDegrees(body.getAngle());
+    gameInstance.ourSpriteBatch.draw(imgToShow, positionX, positionY, length_of_x / 2, length_of_y / 2, length_of_x, length_of_y, 1, 1, angle, 0, 0, imgToShow.getWidth(), imgToShow.getHeight(), false, false);
+}
     public void disposeFromScreen(){
         if(imgToShow!=null){
             imgToShow.dispose();
