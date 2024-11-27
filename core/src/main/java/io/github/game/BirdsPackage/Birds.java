@@ -20,6 +20,7 @@ public abstract class Birds {
     private float positionY;
     private Mygame gameInstance;
     private Body birdBody;
+    public String birdState;
     public Birds(Texture aa, float a, float b, float c, float d, Mygame e, World ourWorld){
         imageOfBird = aa;
         positionX = a;
@@ -27,6 +28,7 @@ public abstract class Birds {
         length_of_x = c;
         length_of_y = d;
         gameInstance = e;
+        birdState = "ground";
 
         BodyDef bodyDefiner = new BodyDef();
         bodyDefiner.type = BodyDef.BodyType.StaticBody;
