@@ -105,7 +105,7 @@ public class GameScreen implements Screen {
         ground = ourWorld.createBody(groundDef);
 
         PolygonShape groundShape = new PolygonShape();
-        groundShape.setAsBox(ourViewPort.getWorldWidth(), ourViewPort.getWorldHeight() / 4);
+        groundShape.setAsBox(ourViewPort.getWorldWidth() + 100, ourViewPort.getWorldHeight() / 4);
 
         FixtureDef groundFixture = new FixtureDef();
         groundFixture.shape = groundShape;
