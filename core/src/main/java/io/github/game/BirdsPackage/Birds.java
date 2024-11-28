@@ -21,7 +21,8 @@ public abstract class Birds {
     private Mygame gameInstance;
     private Body birdBody;
     public String birdState;
-    public Birds(Texture aa, float a, float b, float c, float d, Mygame e, World ourWorld){
+    public int birdHealth;
+    public Birds(Texture aa, float a, float b, float c, float d, Mygame e, World ourWorld,int birdhealth){
         imageOfBird = aa;
         positionX = a;
         positionY = b;
@@ -29,6 +30,7 @@ public abstract class Birds {
         length_of_y = d;
         gameInstance = e;
         birdState = "ground";
+        birdHealth = birdhealth;
 
         BodyDef bodyDefiner = new BodyDef();
         bodyDefiner.type = BodyDef.BodyType.StaticBody;
@@ -40,8 +42,8 @@ public abstract class Birds {
         FixtureDef fixtureDefine = new FixtureDef();
         fixtureDefine.shape = birdShape;
         fixtureDefine.density = 1.0f;
-        fixtureDefine.friction = 0.3f;
-        fixtureDefine.restitution = 0.6f;
+        fixtureDefine.friction = 0.7f;
+        fixtureDefine.restitution = 0.3f;
 
         birdBody.createFixture(fixtureDefine);
         birdShape.dispose();
@@ -53,12 +55,15 @@ public abstract class Birds {
         return birdBody;
     }
     public void addBirdOnScreen(){
-        Vector2 birdPosition = birdBody.getPosition();
-        gameInstance.ourSpriteBatch.draw(imageOfBird,birdPosition.x * gameInstance.pixelPerMeter -length_of_x/2,birdPosition.y * gameInstance.pixelPerMeter - length_of_y/2,length_of_x,length_of_y);
+        if (imageOfBird != null) {
+            Vector2 birdPosition = birdBody.getPosition();
+            gameInstance.ourSpriteBatch.draw(imageOfBird, birdPosition.x * gameInstance.pixelPerMeter - length_of_x / 2, birdPosition.y * gameInstance.pixelPerMeter - length_of_y / 2, length_of_x, length_of_y);
+        }
     }
     public void disposeBird(){
         if(imageOfBird!=null){
             imageOfBird.dispose();
+            imageOfBird = null;
         }
     }
     public Circle birdBound() {
@@ -81,6 +86,39 @@ public abstract class Birds {
 
         }
 
+    }
+
+    public ContactListener collison(Birds b){
+        return new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+
+                Body bodyA = contact.getFixtureA().getBody();
+                Body bodyB = contact.getFixtureB().getBody();
+
+                if(( b.birdBody == bodyA || birdBody == bodyB)){
+                    b.birdState = "dying";
+//                    System.out.println("Bird Touched");
+                    b.birdHealth -= 1;
+                    System.out.println("Bird Health : " + b.birdHealth);
+                }
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        };
     }
 
 }

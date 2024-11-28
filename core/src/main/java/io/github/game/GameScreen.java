@@ -109,10 +109,45 @@ public class GameScreen implements Screen {
 
         FixtureDef groundFixture = new FixtureDef();
         groundFixture.shape = groundShape;
-        groundFixture.density = 1.0f;
-        groundFixture.friction = 0.8f;
+        groundFixture.density = 2f;
+        groundFixture.friction = 4f;
+        groundFixture.restitution = 1f;
         ground.createFixture(groundShape, 0.5f);
         groundShape.dispose();
+
+
+
+        float worldWidth = ourViewPort.getWorldWidth();
+        float worldHeight = ourViewPort.getWorldHeight();
+        float boundaryThickness = 1f;
+
+        BodyDef ceilingDef = new BodyDef();
+        ceilingDef.type = BodyDef.BodyType.StaticBody;
+        ceilingDef.position.set(worldWidth / 2, worldHeight - boundaryThickness / 2);
+        Body ceiling = ourWorld.createBody(ceilingDef);
+        PolygonShape ceilingShape = new PolygonShape();
+        ceilingShape.setAsBox(worldWidth / 2, boundaryThickness / 2);
+        ceiling.createFixture(ceilingShape, 0.0f);
+        ceilingShape.dispose();
+
+        BodyDef leftWallDef = new BodyDef();
+        leftWallDef.type = BodyDef.BodyType.StaticBody;
+        leftWallDef.position.set(boundaryThickness / 2, worldHeight / 2);
+        Body leftWall = ourWorld.createBody(leftWallDef);
+        PolygonShape leftWallShape = new PolygonShape();
+        leftWallShape.setAsBox(boundaryThickness / 2, worldHeight / 2);
+        leftWall.createFixture(leftWallShape, 0.0f);
+        leftWallShape.dispose();
+
+        BodyDef rightWallDef = new BodyDef();
+        rightWallDef.type = BodyDef.BodyType.StaticBody;
+        rightWallDef.position.set(worldWidth - boundaryThickness / 2 + 100, worldHeight / 2);
+        Body rightWall = ourWorld.createBody(rightWallDef);
+        PolygonShape rightWallShape = new PolygonShape();
+        rightWallShape.setAsBox(boundaryThickness / 2, worldHeight / 2);
+        rightWall.createFixture(rightWallShape, 0.0f);
+        rightWallShape.dispose();
+
     }
     @Override
     public void render(float delta) {
@@ -145,10 +180,11 @@ public class GameScreen implements Screen {
 
         Vector2 range = new Vector2(catapultInst.launchBound().x/10, catapultInst.launchBound().y/10);
         Vector2 maxRange = new Vector2(range.x + 60f, range.y + 50f);
-        Boolean atCatapult = false;
+//        Boolean atCatapult = false;
+//        Birds DebugBird = null;
         for (Birds b : allBirds) {
             if (birdToched(b, myCamera)) {
-                if (animatingBird == null) { // Start animation if no bird is currently animating
+                if (animatingBird == null && b.birdState != "launched") { // Start animation if no bird is currently animating
                     if(b.birdState == "ground"){
                         animatingBird = b;
                     }
@@ -163,11 +199,16 @@ public class GameScreen implements Screen {
         }
 
         Birds loadedBird = null;
+        Birds launchedBird = null;
 
         for(Birds b : allBirds){
 
             if(b.birdState == "loaded"){
                 loadedBird = b;
+            }
+
+            else if(b.birdState == "launched" || b.birdState == "dying" || b.birdState == "dead"){
+                launchedBird= b;
             }
 
         }
@@ -188,16 +229,37 @@ public class GameScreen implements Screen {
                 if(birdDis > 35 && !Gdx.input.isTouched() ){
                     loadedBird.birdState = "launchable";
                 }
+                if (loadedBird.birdState == "launchable") {
+                    launching(loadedBird);
+                }
 
             }
             System.out.println(loadedBird.birdState);
+//            DebugBird = loadedBird;
 
-            if(loadedBird.birdState == "launchable"){
-                launching(loadedBird);
-            }
+
+
+
+
 
         }
+        if(launchedBird != null) {
 
+
+            if (launchedBird.birdState == "dead") {
+                animatingBird = null;
+                deathhandler(launchedBird);
+            }
+
+            handleCollison(launchedBird);
+
+            if ((launchedBird.birdHealth == 0 || (launchedBird.getBirdBody().getLinearVelocity().x == 0 && launchedBird.getBirdBody().getLinearVelocity().y == 0))) {
+                launchedBird.birdState = "dead";
+            }
+        }
+//        if(DebugBird != null){
+//            System.out.println(DebugBird.birdHealth);
+//        }
         //if(loadedBird != null){
         //   launching(loadedBird);
         // }
@@ -234,6 +296,12 @@ public class GameScreen implements Screen {
         }
         ourWorld.step(1 / 60f, 6, 2);
         debuggerRenderer.render(ourWorld, myCamera.combined);
+    }
+
+    private void deathhandler(Birds loadedBird) {
+        ourWorld.destroyBody(loadedBird.getBirdBody());
+        loadedBird.disposeBird();
+        allBirds.remove(loadedBird);
     }
 
 
@@ -343,6 +411,10 @@ public class GameScreen implements Screen {
         float launchPowFactor = 0.1f;
 
 
+    }
+
+    public void handleCollison(Birds b){
+        ourWorld.setContactListener(b.collison(b));
     }
 }
 
