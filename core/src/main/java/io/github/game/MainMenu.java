@@ -13,9 +13,13 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.game.BirdsPackage.RedBird;
+import io.github.game.SaveNLoad.DataPersistanceManager;
+import io.github.game.SaveNLoad.GameData;
+import io.github.game.SaveNLoad.IDataPersistance;
 
 public class MainMenu implements Screen {
 //    private Texture bgimg;
+
     private Texture bgimgSpace;
     private Texture bgimgGround;
     OrthographicCamera myCamera;
@@ -78,7 +82,7 @@ public class MainMenu implements Screen {
             Vector3 coordinatesMouseInp = new Vector3(x, y, 0);
             myCamera.unproject(coordinatesMouseInp);
             if (coordinatesMouseInp.x > 320 && coordinatesMouseInp.x < 320 +(ourViewPort.getWorldWidth())/5 && coordinatesMouseInp.y > 100 && coordinatesMouseInp.y < 100 + (ourViewPort.getWorldHeight()) / 8) {
-                Gdx.app.exit();
+                ApplicationQuit();
             }
             if (coordinatesMouseInp.x > 320 && coordinatesMouseInp.x < 320 +(ourViewPort.getWorldWidth())/5 && coordinatesMouseInp.y > 160 && coordinatesMouseInp.y < 160 + (ourViewPort.getWorldHeight()) / 8) {
                 gameInstance.setScreen(new Settings(gameInstance,ourWorld,debuggerRenderer)); // replace with your actual settings screen
@@ -95,6 +99,11 @@ public class MainMenu implements Screen {
         }
     }
 
+    private static void ApplicationQuit() {
+        DataPersistanceManager.getInstance().onApplicationQuit();
+        Gdx.app.exit();
+    }
+
     @Override
     public void resize(int w, int h) {
         ourViewPort.update(w, h, true);
@@ -102,6 +111,8 @@ public class MainMenu implements Screen {
 
     @Override
     public void show() {
+        DataPersistanceManager.getInstance().initialize("saveFile.json");
+        DataPersistanceManager.getInstance().loadGame();
         if(!backgroundMusic.isPlaying()){
             backgroundMusic.play();
         }
@@ -124,4 +135,6 @@ public class MainMenu implements Screen {
     public void dispose() {
         birdForProfileBtn.disposeBird();
     }
+
+
 }

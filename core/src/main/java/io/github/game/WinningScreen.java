@@ -15,7 +15,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import org.w3c.dom.Text;
 
-public class WinningScreen implements Screen {
+import io.github.game.SaveNLoad.DataPersistanceManager;
+import io.github.game.SaveNLoad.GameData;
+import io.github.game.SaveNLoad.IDataPersistance;
+
+public class WinningScreen implements Screen, IDataPersistance {
     private Texture Settingbgimg;
     OrthographicCamera myCamera;
     final Mygame gameInstance;
@@ -27,8 +31,10 @@ public class WinningScreen implements Screen {
     private Box2DDebugRenderer debuggerRenderer;
     private BitmapFont font;
     private int score;
+    private int Highscore;
     private String text;
     public WinningScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR,int s){
+        DataPersistanceManager.getInstance().registerDataPersistenceObject(this);
         this.gameInstance = gameI;
         myCamera = new OrthographicCamera();
         myCamera.setToOrtho(false,800,400);
@@ -37,12 +43,17 @@ public class WinningScreen implements Screen {
         backgroundMusic.setLooping(true);
         ourViewPort = new FitViewport(800, 400, myCamera);
         crossbtn=new Texture("cross.png");
+        // Staricon=new Texture("starIcon.png");
+//        winningimg=new Texture("youWin
         ourWorld = oW;
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(2);
         debuggerRenderer = dR;
         score = s;
+        if(score >= Highscore){
+            Highscore = score;
+        }
         text = "You Win";
     }
 
@@ -95,5 +106,16 @@ public class WinningScreen implements Screen {
 
     @Override
     public void dispose() {
+    }
+
+    @Override
+    public void Load(GameData data) {
+        Highscore = data.score;
+    }
+
+    @Override
+    public void Save(GameData data) {
+        data.score = Highscore;
+
     }
 }
