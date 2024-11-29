@@ -291,11 +291,11 @@ public class GameScreen1 implements Screen {
             }
         }
         if (allPigs.isEmpty()) {
-            gameInstance.setScreen(new WinningScreen(gameInstance,ourWorld,debuggerRenderer,score)); // replace with your actual settings screen
+            gameInstance.setScreen(new WinningScreen(gameInstance,ourWorld,debuggerRenderer,score));
             dispose();
         }
         if (!allPigs.isEmpty() && allBirds.isEmpty()) {
-            gameInstance.setScreen(new LosingScreen(gameInstance,ourWorld,debuggerRenderer,score)); // replace with your actual settings screen
+            gameInstance.setScreen(new LosingScreen(gameInstance,ourWorld,debuggerRenderer,score));
             dispose();
         }
 
@@ -320,17 +320,16 @@ public class GameScreen1 implements Screen {
             Vector3 coordinatesMouseInp = new Vector3(x, y, 0);
             myCamera.unproject(coordinatesMouseInp);
             if (coordinatesMouseInp.x > 5 && coordinatesMouseInp.x < 45 && coordinatesMouseInp.y > ourViewPort.getWorldHeight() - 50 && coordinatesMouseInp.y < ourViewPort.getWorldHeight() - 10) {
-                gameInstance.setScreen(new PauseScreen(gameInstance,ourWorld,debuggerRenderer,"level2")); // replace with your actual settings screen
+                gameInstance.setScreen(new PauseScreen(gameInstance,ourWorld,debuggerRenderer,"level2"));
                 dispose();
             }
         }
         accumulator += delta;
         while (accumulator >= FIXED_TIMESTEP) {
-            ourWorld.step(FIXED_TIMESTEP, 6, 2);  // Update physics at fixed timestep
-            accumulator -= FIXED_TIMESTEP;  // Reduce the accumulator by fixed timestep
+            ourWorld.step(FIXED_TIMESTEP, 6, 2);
+            accumulator -= FIXED_TIMESTEP;
         }
 
-//        debuggerRenderer.render(ourWorld, myCamera.combined);
     }
 
     private void deathhandler(Birds b) {
@@ -370,24 +369,18 @@ public class GameScreen1 implements Screen {
 
     private void launching(Birds b) {
         if (b.birdState.equals("launchable")) {
-            // Get positions of the catapult and bird
             Vector2 catapultPos = catapultInst.launchBound().getCenter(new Vector2());
             Vector2 birdPos = animatingBird.getBirdBody().getPosition();
 
-            // Calculate direction from the catapult to the bird
             Vector2 direction = new Vector2(birdPos.x - catapultPos.x, birdPos.y - catapultPos.y);
-            direction.nor();  // Normalize the vector for consistent direction
+            direction.nor();
 
-            // Make the bird's body dynamic
             b.getBirdBody().setType(BodyDef.BodyType.DynamicBody);
 
             float forceY = animatingBird.getBirdBody().getMass() * ourWorld.getGravity().y;
-
-            // Apply a fixed launch power, independent of bird's mass
             float forcX = 1500000000000000000f;
             float birdLaunchPower = (float)Math.sqrt((forcX * forcX) + (forceY *forceY));
 
-            // Apply impulse in the opposite direction of the catapult-to-bird vector
             animatingBird.getBirdBody().applyLinearImpulse(direction.scl(-birdLaunchPower), birdPos, true);
 
             b.birdState = "launched";
@@ -403,26 +396,25 @@ public class GameScreen1 implements Screen {
             if(touchPos == null){return;}
             float clampedX = MathUtils.clamp(touchPos.x, catapultCenter.x - maxRange.x, catapultCenter.x + maxRange.x);
             float clampedY = MathUtils.clamp(touchPos.y, catapultCenter.y - maxRange.y, catapultCenter.y + maxRange.y);
-            // Set bird's position to clamped values
+
             b.getBirdBody().setTransform(clampedX, clampedY, 0);
         }
     }
 
     private void birdAnimation() {
 
-        // Current bird position
         Vector2 currentPos = animatingBird.getBirdBody().getPosition();
         Vector2 interpolatedPosition = currentPos.lerp(animationTarget, animationTime / totalAnimationDuration);
 
-        // Update bird's position
+
         animatingBird.getBirdBody().setTransform(interpolatedPosition, 0);
 
-        // Increment animation time
+
         animationTime += Gdx.graphics.getDeltaTime();
 
-        // End animation when complete
+
         if (animationTime >= totalAnimationDuration) {
-            animatingBird.getBirdBody().setTransform(animationTarget, 0); // Snap to final position
+            animatingBird.getBirdBody().setTransform(animationTarget, 0);
             animatingBird.getBirdBody().setType(BodyDef.BodyType.StaticBody);
             animatingBird.birdState = "loaded";// Make bird static on catapult
         }

@@ -60,10 +60,10 @@ public class GameScreen implements Screen {
     private Box2DDebugRenderer debuggerRenderer;
     private Body ground;
     private ArrayList<Birds> allBirds;
-    private Birds animatingBird = null; // Bird being animated
-    private Vector2 animationTarget;   // Target position (catapult center)
-    private float animationTime = 0;   // Time elapsed during animation
-    private final float totalAnimationDuration = 0.5f; // Animation duration in seconds
+    private Birds animatingBird = null;
+    private Vector2 animationTarget;
+    private float animationTime = 0;
+    private final float totalAnimationDuration = 0.5f;
     private boolean isBirdLaunched = false;
     private Block block;
     private ArrayList<Pig> allPigs;
@@ -203,7 +203,7 @@ public class GameScreen implements Screen {
 //        Birds DebugBird = null;
         for (Birds b : allBirds) {
             if (birdToched(b, myCamera)) {
-                if (animatingBird == null && b.birdState != "launched") { // Start animation if no bird is currently animating
+                if (animatingBird == null && b.birdState != "launched") {
                     if(b.birdState == "ground"){
                         animatingBird = b;
                     }
@@ -292,11 +292,11 @@ public class GameScreen implements Screen {
             }
         }
         if (allPigs.isEmpty()) {
-            gameInstance.setScreen(new WinningScreen(gameInstance,ourWorld,debuggerRenderer,score)); // replace with your actual settings screen
+            gameInstance.setScreen(new WinningScreen(gameInstance,ourWorld,debuggerRenderer,score));
             dispose();
         }
         if (!allPigs.isEmpty() && allBirds.isEmpty()) {
-            gameInstance.setScreen(new LosingScreen(gameInstance,ourWorld,debuggerRenderer,score)); // replace with your actual settings screen
+            gameInstance.setScreen(new LosingScreen(gameInstance,ourWorld,debuggerRenderer,score));
             ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen2(gameInstance,ourWorld,debuggerRenderer));
             dispose();
         }
@@ -308,17 +308,16 @@ public class GameScreen implements Screen {
             Vector3 coordinatesMouseInp = new Vector3(x, y, 0);
             myCamera.unproject(coordinatesMouseInp);
             if (coordinatesMouseInp.x > 5 && coordinatesMouseInp.x < 45 && coordinatesMouseInp.y > ourViewPort.getWorldHeight() - 50 && coordinatesMouseInp.y < ourViewPort.getWorldHeight() - 10) {
-                gameInstance.setScreen(new PauseScreen(gameInstance,ourWorld,debuggerRenderer,"level1")); // replace with your actual settings screen
+                gameInstance.setScreen(new PauseScreen(gameInstance,ourWorld,debuggerRenderer,"level1"));
                 dispose();
             }
         }
         accumulator += delta;
         while (accumulator >= FIXED_TIMESTEP) {
-            ourWorld.step(FIXED_TIMESTEP, 6, 2);  // Update physics at fixed timestep
-            accumulator -= FIXED_TIMESTEP;  // Reduce the accumulator by fixed timestep
+            ourWorld.step(FIXED_TIMESTEP, 6, 2);
+            accumulator -= FIXED_TIMESTEP;
         }
 
-//        debuggerRenderer.render(ourWorld, myCamera.combined);
     }
 
     private void deathhandler(Birds b) {
