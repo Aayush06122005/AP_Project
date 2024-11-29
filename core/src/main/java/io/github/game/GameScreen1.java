@@ -272,9 +272,7 @@ public class GameScreen1 implements Screen {
                 launchedBird.birdState = "dead";
             }
         }
-//        MassData data = null;
-//        allBirds.get(0).getBirdBody().setMassData(data);
-        //System.out.println(allBirds.get(3).getBirdBody().getMass());
+
         if(block != null && block.getHealth() <= 0){
             deathhandler1(block);
         }
@@ -332,7 +330,7 @@ public class GameScreen1 implements Screen {
             accumulator -= FIXED_TIMESTEP;  // Reduce the accumulator by fixed timestep
         }
 
-        debuggerRenderer.render(ourWorld, myCamera.combined);
+//        debuggerRenderer.render(ourWorld, myCamera.combined);
     }
 
     private void deathhandler(Birds b) {

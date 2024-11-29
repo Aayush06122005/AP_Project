@@ -69,6 +69,16 @@ public class AllLevels implements Screen {
                 gameInstance.setScreen(new GameScreen(gameInstance,ourWorld,debuggerRenderer));
                 dispose();
             }
+            if (coordinatesMouseInp.x > 360 && coordinatesMouseInp.x < 360 +(ourViewPort.getWorldWidth())/10 && coordinatesMouseInp.y > 200 && coordinatesMouseInp.y < 200 + (ourViewPort.getWorldHeight())/6) {
+                gameInstance.setScreen(new GameScreen1(gameInstance,ourWorld,debuggerRenderer));
+                dispose();
+            }
+            if (coordinatesMouseInp.x > 490 && coordinatesMouseInp.x < 490 +(ourViewPort.getWorldWidth())/10 && coordinatesMouseInp.y > 200 && coordinatesMouseInp.y < 200 + (ourViewPort.getWorldHeight())/6) {
+                gameInstance.setScreen(new GameScreen2(gameInstance,ourWorld,debuggerRenderer));
+                dispose();
+            }
+
+
             if (coordinatesMouseInp.x > 750 && coordinatesMouseInp.x < 750 +(ourViewPort.getWorldWidth())/18 && coordinatesMouseInp.y > 355 && coordinatesMouseInp.y < 355 + (ourViewPort.getWorldHeight())/10) {
                 gameInstance.setScreen(new MainMenu(gameInstance,ourWorld,debuggerRenderer));
                 dispose();

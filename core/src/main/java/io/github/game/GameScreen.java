@@ -273,9 +273,7 @@ public class GameScreen implements Screen {
                 launchedBird.birdState = "dead";
             }
         }
-//        MassData data = null;
-//        allBirds.get(0).getBirdBody().setMassData(data);
-      //System.out.println(allBirds.get(3).getBirdBody().getMass());
+
         if(block != null && block.getHealth() <= 0){
             deathhandler1(block);
         }
@@ -304,20 +302,6 @@ public class GameScreen implements Screen {
         }
 
 
-
-
-
-
-
-
-
-        //System.out.println(loadedBird.birdState);
-
-        // launching(loadedBird);
-
-
-
-
         if (Gdx.input.isTouched()) {
             int x = Gdx.input.getX();
             int y = Gdx.input.getY();
@@ -334,32 +318,18 @@ public class GameScreen implements Screen {
             accumulator -= FIXED_TIMESTEP;  // Reduce the accumulator by fixed timestep
         }
 
-        debuggerRenderer.render(ourWorld, myCamera.combined);
+//        debuggerRenderer.render(ourWorld, myCamera.combined);
     }
 
     private void deathhandler(Birds b) {
-//        if(obj.getClass().getSimpleName() == "Birds"){
-//            Birds b = (Birds) obj;
+
             ourWorld.destroyBody(b.getBirdBody());
             b.disposeBird();
             allBirds.remove(b);
-//        } else if (obj.getClass().getSimpleName() == "Block") {
-//            Block bl = (Block) obj;
-//            ourWorld.destroyBody(bl.getBody());
-//            bl.disposeFromScreen();
-//            block = null;
-//        }
 
 
     }
     private void deathhandler1(Block bl) {
-//            if(obj.getClass().getSimpleName() == "Birds"){
-//                Birds b = (Birds) obj;
-//                ourWorld.destroyBody(b.getBirdBody());
-//                b.disposeBird();
-//                allBirds.remove(b);
-//            } else if (obj.getClass().getSimpleName() == "Block") {
-//                Block bl = (Block) obj;
         ourWorld.destroyBody(bl.getBody());
         bl.disposeFromScreen();
         block = null;
@@ -374,24 +344,17 @@ public class GameScreen implements Screen {
 
     private void launching(Birds b) {
         if (b.birdState.equals("launchable")) {
-            // Get positions of the catapult and bird
             Vector2 catapultPos = catapultInst.launchBound().getCenter(new Vector2());
             Vector2 birdPos = animatingBird.getBirdBody().getPosition();
 
-            // Calculate direction from the catapult to the bird
             Vector2 direction = new Vector2(birdPos.x - catapultPos.x, birdPos.y - catapultPos.y);
-            direction.nor();  // Normalize the vector for consistent direction
-
-            // Make the bird's body dynamic
+            direction.nor();
             b.getBirdBody().setType(BodyDef.BodyType.DynamicBody);
 
             float forceY = animatingBird.getBirdBody().getMass() * ourWorld.getGravity().y;
 
-            // Apply a fixed launch power, independent of bird's mass
             float forcX = 1500000000000000000f;
             float birdLaunchPower = (float)Math.sqrt((forcX * forcX) + (forceY *forceY));
-
-            // Apply impulse in the opposite direction of the catapult-to-bird vector
             animatingBird.getBirdBody().applyLinearImpulse(direction.scl(-birdLaunchPower), birdPos, true);
 
             b.birdState = "launched";
@@ -407,28 +370,20 @@ public class GameScreen implements Screen {
             if(touchPos == null){return;}
             float clampedX = MathUtils.clamp(touchPos.x, catapultCenter.x - maxRange.x, catapultCenter.x + maxRange.x);
             float clampedY = MathUtils.clamp(touchPos.y, catapultCenter.y - maxRange.y, catapultCenter.y + maxRange.y);
-            // Set bird's position to clamped values
             b.getBirdBody().setTransform(clampedX, clampedY, 0);
         }
     }
 
     private void birdAnimation() {
 
-        // Current bird position
         Vector2 currentPos = animatingBird.getBirdBody().getPosition();
         Vector2 interpolatedPosition = currentPos.lerp(animationTarget, animationTime / totalAnimationDuration);
-
-        // Update bird's position
         animatingBird.getBirdBody().setTransform(interpolatedPosition, 0);
-
-        // Increment animation time
         animationTime += Gdx.graphics.getDeltaTime();
-
-        // End animation when complete
         if (animationTime >= totalAnimationDuration) {
             animatingBird.getBirdBody().setTransform(animationTarget, 0); // Snap to final position
             animatingBird.getBirdBody().setType(BodyDef.BodyType.StaticBody);
-            animatingBird.birdState = "loaded";// Make bird static on catapult
+            animatingBird.birdState = "loaded";
         }
 
 
@@ -501,15 +456,6 @@ public class GameScreen implements Screen {
         public GameContactListener(Birds bird,ArrayList<Pig> p){
             b = bird;
             allPig = p;
-//            if(obj.getClass().getSimpleName() == "Birds"){
-//                b = (Birds) obj;
-//            }else{
-//                System.out.println(obj.getClass().getSimpleName());
-//            }
-//            else if(obj.getClass().getSimpleName() == "Pig"){
-//            allPigs = (ArrayList<Pig>) obj
-
-
         }
 
         @Override

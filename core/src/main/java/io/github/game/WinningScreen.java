@@ -37,8 +37,6 @@ public class WinningScreen implements Screen {
         backgroundMusic.setLooping(true);
         ourViewPort = new FitViewport(800, 400, myCamera);
         crossbtn=new Texture("cross.png");
-        // Staricon=new Texture("starIcon.png");
-//        winningimg=new Texture("youWin
         ourWorld = oW;
         font = new BitmapFont();
         font.setColor(Color.WHITE);

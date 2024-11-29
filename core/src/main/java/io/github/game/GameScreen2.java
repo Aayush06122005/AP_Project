@@ -198,8 +198,6 @@ public class GameScreen2 implements Screen {
 
         Vector2 range = new Vector2(catapultInst.launchBound().x/10, catapultInst.launchBound().y/10);
         Vector2 maxRange = new Vector2(range.x + 60f, range.y + 50f);
-//        Boolean atCatapult = false;
-//        Birds DebugBird = null;
         for (Birds b : allBirds) {
             if (birdToched(b, myCamera)) {
                 if (animatingBird == null && b.birdState != "launched") { // Start animation if no bird is currently animating
@@ -332,7 +330,7 @@ public class GameScreen2 implements Screen {
             accumulator -= FIXED_TIMESTEP;  // Reduce the accumulator by fixed timestep
         }
 
-        debuggerRenderer.render(ourWorld, myCamera.combined);
+//        debuggerRenderer.render(ourWorld, myCamera.combined);
     }
 
     private void deathhandler(Birds b) {

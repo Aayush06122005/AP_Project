@@ -56,16 +56,10 @@ public class LosingScreen  implements Screen {
         gameInstance.ourSpriteBatch.begin();
         gameInstance.ourSpriteBatch.draw(Settingbgimg, 0, 0,ourViewPort.getWorldWidth(), ourViewPort.getWorldHeight());
         gameInstance.ourSpriteBatch.draw(crossbtn,700 ,320 ,(ourViewPort.getWorldWidth())/10,(ourViewPort.getWorldHeight())/6);
-        // gameInstance.ourSpriteBatch.draw(Staricon,270 ,200 ,(ourViewPort.getWorldWidth())/10,(ourViewPort.getWorldHeight())/6);
-        // gameInstance.ourSpriteBatch.draw(Staricon,360,200 ,(ourViewPort.getWorldWidth())/10,(ourViewPort.getWorldHeight())/6);
-//        gameInstance.textWriter.draw(gameInstance.ourSpriteBatch, "Tap anywhere to begin!", 325, 70);
-        // gameInstance.ourSpriteBatch.draw(Staricon,450,200 ,(ourViewPort.getWorldWidth())/10,(ourViewPort.getWorldHeight())/6);
-
-//        gameInstance.ourSpriteBatch.draw(Losingimg,240,170 ,2*(ourViewPort.getWorldWidth())/5,2*(ourViewPort.getWorldHeight())/6);
 
         font.draw(gameInstance.ourSpriteBatch, text, 250, 300);
         font.draw(gameInstance.ourSpriteBatch, "Your Score: "+score, 200, 200);
-//
+
         gameInstance.ourSpriteBatch.end();
         if (Gdx.input.isTouched()) {
             int x = Gdx.input.getX();

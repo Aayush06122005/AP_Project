@@ -73,29 +73,14 @@ public abstract class Birds {
     }
     public Circle birdBound() {
         return new Circle(
-            this.getBirdBody().getPosition().x,  // Center X
-            this.getBirdBody().getPosition().y,  // Center Y
+            this.getBirdBody().getPosition().x,
+            this.getBirdBody().getPosition().y,
             (float) Math.sqrt(Math.pow(length_of_x / 2, 2) + Math.pow(length_of_y / 2, 2)) // Radius
         );
     }
-//    public void ifInsideCatapult(Catapult c, OrthographicCamera myCamera){
-//        Rectangle boundsToCheck = c.launchBound();
-////        System.out.println("worldClick : " + worldClick.x + " " + worldClick.y );
-//        if (boundsToCheck.contains(this.getBirdBody().getPosition().x, this.getBirdBody().getPosition().y)) {
-//            System.out.println("Bird inside catapult!");
-//            this.getBirdBody().setType(BodyDef.BodyType.StaticBody);
-//        }else{
-//            if(!GameScreen.birdToched(this,myCamera)){
-//                this.getBirdBody().setType(BodyDef.BodyType.DynamicBody);
-//            }
-//
-//        }
-//
-//    }
+
     public int getDamage(){
         return damage;
     }
-
-
 
 }
