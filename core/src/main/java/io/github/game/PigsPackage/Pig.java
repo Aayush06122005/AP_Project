@@ -16,16 +16,22 @@ public abstract class Pig {
     private float positionY;
     private Mygame gameInstance;
     private Body body;
+    public String state;
     private int hitPoint;
+    private boolean effected;
+    private World ourWorld;
 
-    public Pig(Texture aa, float a, float b, float c, float d, Mygame e, int h, World ourWorld) {
+    public Pig(Texture aa, float a, float b, float c, float d, Mygame e, int h, World world) {
         imageOfPig = aa;
         positionX = a;
         positionY = b;
         length_of_x = c;
         length_of_y = d;
         gameInstance = e;
+        ourWorld = world;
         hitPoint = h;
+        effected = false;
+        state = "alive";
 
 
         CircleShape shapePig = new CircleShape();
@@ -41,6 +47,8 @@ public abstract class Pig {
         fixtureDef.density = 1.0f;
         fixtureDef.friction = 0.5f;
         fixtureDef.restitution = 0.5f;
+        fixtureDef.filter.categoryBits = (short)0x0003;
+        this.body.setUserData(this);
 
         body.createFixture(fixtureDef);
 
@@ -52,61 +60,46 @@ public abstract class Pig {
     }
 
     public void addPigOnScreen() {
-        float pigBodyRotation = body.getAngle() * MathUtils.radiansToDegrees;
-        positionX = body.getPosition().x * gameInstance.pixelPerMeter - length_of_x / 2;
-        positionY = body.getPosition().y * gameInstance.pixelPerMeter - length_of_y / 2;
-        TextureRegion pigRegion = new TextureRegion(imageOfPig);
-        gameInstance.ourSpriteBatch.draw(pigRegion, positionX, positionY, length_of_x / 2, length_of_y / 2, length_of_x, length_of_y, 1, 1, pigBodyRotation);
+        if(imageOfPig != null){
+            float pigBodyRotation = body.getAngle() * MathUtils.radiansToDegrees;
+            positionX = body.getPosition().x * gameInstance.pixelPerMeter - length_of_x / 2;
+            positionY = body.getPosition().y * gameInstance.pixelPerMeter - length_of_y / 2;
+            TextureRegion pigRegion = new TextureRegion(imageOfPig);
+            gameInstance.ourSpriteBatch.draw(pigRegion, positionX, positionY, length_of_x / 2, length_of_y / 2, length_of_x, length_of_y, 1, 1, pigBodyRotation);
+        }
+
+    }
+
+    public Body getBody(){
+        return body;
     }
 
     public void disposePig() {
+        //ourWorld.destroyBody(body);
         if (imageOfPig != null) {
             imageOfPig.dispose();
+            imageOfPig = null;
         }
     }
 
-    public void handleDamage(int damage) {
+
+    public boolean isEffected(){
+        return effected;
+    }
+    public void setEffected(boolean cond){
+        effected = cond;
+    }
+    public int getHealth(){
+        return  hitPoint;
+    }
+    public void deathHandler(int damage){
         hitPoint -= damage;
-        if (hitPoint <= 0) {
-            disposePig();
+        if(hitPoint <= 0){
+            state = "destroy";
         }
     }
 }
 
-//    public ContactListener collison(Pig p){
-//        return new ContactListener() {
-//            @Override
-//            public void beginContact(Contact contact) {
-//
-//                Body bodyA = contact.getFixtureA().getBody();
-//                Body bodyB = contact.getFixtureB().getBody();
-//
-//                if(( b.birdBody == bodyA || birdBody == bodyB)){
-//                    b.birdState = "dying";
-////                    System.out.println("Bird Touched");
-//                    b.birdHealth -= 1;
-//                    System.out.println("Bird Health : " + b.birdHealth);
-//                }
-//            }
-//
-//            @Override
-//            public void endContact(Contact contact) {
-//
-//            }
-//
-//            @Override
-//            public void preSolve(Contact contact, Manifold oldManifold) {
-//
-//            }
-//
-//            @Override
-//            public void postSolve(Contact contact, ContactImpulse impulse) {
-//
-//            }
-//        };
-//    }
-//
-//}
 
 
 

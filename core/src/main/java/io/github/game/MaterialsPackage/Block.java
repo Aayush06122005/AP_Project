@@ -17,7 +17,7 @@ public abstract class Block {
     private Body body;
     public String state;
     private int hitPoint;
-    private  World ourWorld;
+    private int damage;
 
 
     public Block(float a, float b, float c, float d, Mygame e,World world){
@@ -26,7 +26,6 @@ public abstract class Block {
         length_of_x = c;
         length_of_y = d;
         gameInstance = e;
-        ourWorld = world;
         imgToShow = new Texture("space.jpg");
         state = "exist";
 
@@ -87,6 +86,13 @@ public abstract class Block {
         if(hitPoint <= 0){
             state = "destroy";
         }
+    }
+
+    public int getDamage(){
+        return damage;
+    }
+    public void setDamage(int hit){
+        damage = hit;
     }
 
 

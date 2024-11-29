@@ -1,19 +1,13 @@
 package io.github.game.BirdsPackage;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import io.github.game.Catapult;
-import io.github.game.GameScreen;
-import io.github.game.MaterialsPackage.Block;
+
 import io.github.game.Mygame;
-import io.github.game.Player;
 
 public abstract class Birds {
     public Texture imageOfBird;
@@ -50,7 +44,8 @@ public abstract class Birds {
         fixtureDefine.shape = birdShape;
         fixtureDefine.density = 20f;
         fixtureDefine.friction = 0.8f;
-        fixtureDefine.restitution = 0.3f;
+        fixtureDefine.restitution = 0.7f;
+        this.birdBody.setUserData(this);
 
         birdBody.createFixture(fixtureDefine);
         birdShape.dispose();

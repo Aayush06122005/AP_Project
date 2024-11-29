@@ -10,12 +10,15 @@ public class RectangularBlock extends Block {
         if (material.equals("wooden")) {
             this.setImg(new Texture("rectangleWooden.png"));
             this.setHealth(2);
+            this.setDamage(3);
         } else if (material.equals("steel")) {
             this.setImg(new Texture("rectangleSteel.png"));
             this.setHealth(3);
+            this.setDamage(5);
         } else {
             this.setImg(new Texture("rectangleGlass.png"));
             this.setHealth(1);
+            this.setDamage(2);
         }
     }
 

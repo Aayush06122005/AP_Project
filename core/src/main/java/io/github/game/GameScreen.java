@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
@@ -65,8 +63,10 @@ public class GameScreen implements Screen {
     private final float totalAnimationDuration = 0.5f; // Animation duration in seconds
     private boolean isBirdLaunched = false;
     private Block block;
+    private ArrayList<Pig> allPigs;
     public GameScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR) {
         allBirds = new ArrayList<>();
+        allPigs = new ArrayList<>();
         myCamera = new OrthographicCamera();
         myCamera.setToOrtho(false, 800, 400);
         ourViewPort = new FitViewport(800, 400, myCamera);
@@ -100,9 +100,14 @@ public class GameScreen implements Screen {
         block1 = new RectangularBlock("steel",470,ourViewPort.getWorldHeight() / 4 + 70,280,20,gameInstance,ourWorld);
         block2 = new SquareBlock("glass",530,ourViewPort.getWorldHeight() / 4 + 90,50,50,gameInstance,ourWorld);
         block3 = new SquareBlock("wood",600,ourViewPort.getWorldHeight() / 4 + 90,50,50,gameInstance,ourWorld);
-        pig1 = new Pig1(545,ourViewPort.getWorldHeight() / 4 + 101,20,20,gameInstance,100,ourWorld);
-        pig2 = new Pig2(670,ourViewPort.getWorldHeight() / 4 + 90 ,30,30,gameInstance,100,ourWorld);
-        pig3 = new Pig3(781 + 40 + 16 - 170 + 80,ourViewPort.getWorldHeight() / 4,30,30,gameInstance,100,ourWorld);
+        pig1 = new Pig1(545,ourViewPort.getWorldHeight() / 4 + 101,20,20,gameInstance,ourWorld);
+        pig2 = new Pig2(670,ourViewPort.getWorldHeight() / 4 + 90 ,30,30,gameInstance,ourWorld);
+        pig3 = new Pig3(781 + 40 + 16 - 170 + 80,ourViewPort.getWorldHeight() / 4,30,30,gameInstance,ourWorld);
+        allPigs.add(pig1);
+        allPigs.add(pig2);
+        allPigs.add(pig3);
+
+
 
 
         BodyDef groundDef = new BodyDef();
@@ -153,10 +158,7 @@ public class GameScreen implements Screen {
         rightWallShape.setAsBox(boundaryThickness / 2, worldHeight / 2);
         rightWall.createFixture(rightWallShape, 0.0f);
         rightWallShape.dispose();
-//
-//        for(Birds b : allBirds ){
-//            b.getBirdBody().setType(BodyDef.BodyType.StaticBody);
-//        }
+
 
     }
     @Override
@@ -228,7 +230,7 @@ public class GameScreen implements Screen {
             if((Gdx.input.isTouched())) {
 
                 dragging(maxRange, loadedBird);
-                System.out.println("Touching");
+              //  System.out.println("Touching");
 
             }else{
                 Vector2 catapultCenter = new Vector2((catapultInst.launchBound().x + catapultInst.launchBound().width/2),(catapultInst.launchBound().y + catapultInst.launchBound().height/2));
@@ -255,7 +257,10 @@ public class GameScreen implements Screen {
                 deathhandler(launchedBird);
             }
 
-            handleCollison(launchedBird);
+                handleBirdCollison(launchedBird);
+
+
+
 
             if ((launchedBird.birdHealth <= 0 || (launchedBird.getBirdBody().getLinearVelocity().x == 0 && launchedBird.getBirdBody().getLinearVelocity().y == 0))) {
                 launchedBird.birdState = "dead";
@@ -267,6 +272,22 @@ public class GameScreen implements Screen {
         if(block != null && block.getHealth() <= 0){
             deathhandler1(block);
         }
+
+        for(Pig p : allPigs){
+            Vector2 v = new Vector2(0,0);
+            if(p.getBody().getLinearVelocity() != v){
+                p.setEffected(true);
+            }
+        }
+        for(Pig p : allPigs){
+            if(p.state == "destroy"){
+                deathhandler3(p);
+                break;
+            }
+        }
+
+
+
 
 
 
@@ -307,17 +328,38 @@ public class GameScreen implements Screen {
         debuggerRenderer.render(ourWorld, myCamera.combined);
     }
 
-    private void deathhandler(Birds loadedBird) {
-        ourWorld.destroyBody(loadedBird.getBirdBody());
-        loadedBird.disposeBird();
-        allBirds.remove(loadedBird);
+    private void deathhandler(Birds b) {
+//        if(obj.getClass().getSimpleName() == "Birds"){
+//            Birds b = (Birds) obj;
+            ourWorld.destroyBody(b.getBirdBody());
+            b.disposeBird();
+            allBirds.remove(b);
+//        } else if (obj.getClass().getSimpleName() == "Block") {
+//            Block bl = (Block) obj;
+//            ourWorld.destroyBody(bl.getBody());
+//            bl.disposeFromScreen();
+//            block = null;
+//        }
+
+
     }
     private void deathhandler1(Block bl) {
+//            if(obj.getClass().getSimpleName() == "Birds"){
+//                Birds b = (Birds) obj;
+//                ourWorld.destroyBody(b.getBirdBody());
+//                b.disposeBird();
+//                allBirds.remove(b);
+//            } else if (obj.getClass().getSimpleName() == "Block") {
+//                Block bl = (Block) obj;
         ourWorld.destroyBody(bl.getBody());
         bl.disposeFromScreen();
         block = null;
-        System.out.println("Total bodies in the world: " + ourWorld.getBodyCount());
-
+    }
+    private void deathhandler3(Pig p) {
+        ourWorld.destroyBody(p.getBody());
+        p.disposePig();
+        allPigs.remove(p);
+        block = null;
     }
 
 
@@ -342,14 +384,7 @@ public class GameScreen implements Screen {
 
             // Apply impulse in the opposite direction of the catapult-to-bird vector
             animatingBird.getBirdBody().applyLinearImpulse(direction.scl(-birdLaunchPower), birdPos, true);
-            Vector2 currentVelocity = animatingBird.getBirdBody().getLinearVelocity();
-//            animatingBird.getBirdBody().setGravityScale(01f);
-//
-//            float launchSpeed =  100000000;
-//            Vector2 launchVelocity = currentVelocity.nor().scl(launchSpeed);
-//            animatingBird.getBirdBody().setLinearVelocity(launchVelocity);
 
-            // Set the bird's state to "launched"
             b.birdState = "launched";
         }
     }
@@ -424,13 +459,13 @@ public class GameScreen implements Screen {
     public static Boolean birdToched(Birds b,OrthographicCamera myCamera){
         Vector2 pos = b.getBirdBody().getPosition();
         Circle boundsToCheck = b.birdBound();
-//        System.out.println("circle : " + boundsToCheck.x + " " + boundsToCheck.y );
+;
         Vector3 worldClick = Player.getInput(myCamera);
         if(worldClick == null){
             return false;
         }
 
-//        System.out.println("worldClick : " + worldClick.x + " " + worldClick.y );
+
         if (boundsToCheck.contains(worldClick.x, worldClick.y)) {
 
             return true;
@@ -442,15 +477,30 @@ public class GameScreen implements Screen {
 
 
 
-    public void handleCollison(Birds b){
+    public void handleBirdCollison(Birds b){
 
-        ourWorld.setContactListener(new GameContactListener(b));
+        ourWorld.setContactListener(new GameContactListener(b,allPigs));
+    }
+    public void handlePigCollison(Birds b){
+
+        ourWorld.setContactListener(new GameContactListener(b,allPigs));
     }
 
     class GameContactListener implements ContactListener{
         private Birds b;
-        public GameContactListener(Birds bird){
+        private ArrayList<Pig> allPig;
+        public GameContactListener(Birds bird,ArrayList<Pig> p){
             b = bird;
+            allPig = p;
+//            if(obj.getClass().getSimpleName() == "Birds"){
+//                b = (Birds) obj;
+//            }else{
+//                System.out.println(obj.getClass().getSimpleName());
+//            }
+//            else if(obj.getClass().getSimpleName() == "Pig"){
+//            allPigs = (ArrayList<Pig>) obj
+
+
         }
 
         @Override
@@ -466,7 +516,7 @@ public class GameScreen implements Screen {
 
             if(( b.getBirdBody() == bodyA || b.getBirdBody() == bodyB)){
                 b.birdState = "dying";
-//                    System.out.println("Bird Touched");
+
                 b.birdHealth -= 1;
                 System.out.println("Bird Health : " + b.birdHealth);
             }
@@ -479,8 +529,43 @@ public class GameScreen implements Screen {
                 }
                 block.deathHandler(b.getDamage());
 
+            }
+
+            for(Pig p : allPigs){
+                if(( b.getBirdBody() == bodyA && p.getBody() == bodyB) || (p.getBody() == bodyA && b.getBirdBody() == bodyB))
+                {
+
+                    p.deathHandler(5);
+                    System.out.println("bird hit piggy");
+                }
+                if(p.isEffected()){
+                    if((p.getBody() == bodyA && ground == bodyB) || (ground == bodyA && p.getBody() == bodyB)){
+                        if(p.getBody().getLinearVelocity().y  < -7){
+                            if(p != null){
+                                p.deathHandler(4);
+                            }
+
+                            System.out.println("Piggy hit the ground");
+                        }
+
+                    }
+                    if((p.getBody() == bodyA && filterB.categoryBits == blockC) || (filterA.categoryBits == blockC && p.getBody() == bodyB)){
+                        if( Math.abs(p.getBody().getLinearVelocity().x ) > 9  || (p.getBody().getLinearVelocity().y) < -6){
+                            if(bodyA.getUserData().equals(p)){
+                                block = (Block)bodyB.getUserData();
+                            }else{
+                                block = (Block)bodyA.getUserData();
+                            }
+
+                            p.deathHandler(block.getDamage());
+                            System.out.println("Piggy hit the block");
+                        }
+
+                    }
+                }
 
             }
+
         }
 
 
