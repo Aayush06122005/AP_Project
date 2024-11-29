@@ -9,10 +9,13 @@ public class SolidTriangleBlock extends Block {
         super(a, b, c, d, e,world);
         if (material.equals("wooden")) {
             this.setImg(new Texture("solidTriangleWood.png"));
+            this.setHealth(2);
         } else if (material.equals("Steel")) {
             this.setImg(new Texture("solidTriangleSteel.png"));
+            this.setHealth(3);
         } else {
             this.setImg(new Texture("solidTriangleGlass.png"));
+            this.setHealth(1);
         }
     }
 

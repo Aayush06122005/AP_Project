@@ -77,7 +77,7 @@ public class LosingScreen  implements Screen {
 
     @Override
     public void show() {
-        backgroundMusic.play();
+
     }
 
     @Override

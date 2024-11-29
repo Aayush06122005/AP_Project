@@ -85,7 +85,7 @@ public class AllLevels implements Screen {
     public void show() {
         // start the playback of the background music
         // when the screen is shown
-        backgroundMusic.play();
+
     }
 
     @Override

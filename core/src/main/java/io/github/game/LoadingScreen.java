@@ -60,7 +60,7 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void show() {
-        backgroundMusic.play();
+
     }
 
     @Override

@@ -6,7 +6,7 @@ import io.github.game.Mygame;
 
 public class RedBird extends Birds {
     public RedBird(float a, float b, float c, float d, Mygame e, World ourWorld){
-        super(new Texture("angryBird1.png"),a,b,c,d,e,ourWorld,6);
+        super(new Texture("angryBird1.png"),a,b,c,d,e,ourWorld,6,3);
     }
 
 }

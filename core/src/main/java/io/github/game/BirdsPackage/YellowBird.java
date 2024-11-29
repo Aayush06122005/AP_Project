@@ -6,7 +6,7 @@ import io.github.game.Mygame;
 
 public class YellowBird extends Birds {
     public YellowBird(float a, float b, float c, float d, Mygame e, World ourWorld){
-        super(new Texture("angryBird2.png"),a,b,c,d,e,ourWorld,7);
+        super(new Texture("angryBird2.png"),a,b,c,d,e,ourWorld,7,2);
     }
 
 }

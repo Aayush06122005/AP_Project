@@ -9,10 +9,13 @@ public class SquareBlock extends Block {
         super(a, b, c, d, e,world);
         if (material.equals("wooden")) {
             this.setImg(new Texture("squareWood.png"));
+            this.setHealth(2);
         } else if (material.equals("Steel")) {
             this.setImg(new Texture("squareSteel.png"));
+            this.setHealth(3);
         } else {
             this.setImg(new Texture("squareGlass.png"));
+            this.setHealth(1);
         }
     }
 

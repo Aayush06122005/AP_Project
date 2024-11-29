@@ -102,7 +102,10 @@ public class MainMenu implements Screen {
 
     @Override
     public void show() {
-        backgroundMusic.play();
+        if(!backgroundMusic.isPlaying()){
+            backgroundMusic.play();
+        }
+
     }
 
     @Override

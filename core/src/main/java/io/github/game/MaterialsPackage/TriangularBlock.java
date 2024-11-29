@@ -9,10 +9,13 @@ public class TriangularBlock extends Block {
         super(a, b, c, d, e,world);
         if (material.equals("wooden")) {
             this.setImg(new Texture("triangleWooden.png"));
+            this.setHealth(2);
         } else if (material.equals("Steel")) {
             this.setImg(new Texture("triangleSteel.png"));
+            this.setHealth(3);
         } else {
             this.setImg(new Texture("triangleGlass.png"));
+            this.setHealth(1);
         }
     }
 

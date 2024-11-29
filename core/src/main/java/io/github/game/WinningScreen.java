@@ -67,7 +67,7 @@ public class WinningScreen implements Screen {
 
     @Override
     public void show() {
-        backgroundMusic.play();
+
     }
 
     @Override

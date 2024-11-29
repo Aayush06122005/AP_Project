@@ -78,7 +78,7 @@ public class Profile implements Screen {
 
     @Override
     public void show() {
-        backgroundMusic.play();
+
     }
 
     @Override
