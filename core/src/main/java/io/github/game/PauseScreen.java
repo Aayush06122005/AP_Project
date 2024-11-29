@@ -12,6 +12,9 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+
+import java.awt.*;
+
 public class PauseScreen implements Screen {
     private Texture Settingbgimg;
     OrthographicCamera myCamera;
@@ -25,8 +28,8 @@ public class PauseScreen implements Screen {
     private Texture resumeBtn;
     private World ourWorld;
     private Box2DDebugRenderer debuggerRenderer;
-
-    public PauseScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR){
+    private String level;
+    public PauseScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR,String l){
         this.gameInstance = gameI;
         myCamera = new OrthographicCamera();
         myCamera.setToOrtho(false,800,400);
@@ -40,6 +43,7 @@ public class PauseScreen implements Screen {
         exitBtn=new Texture("exit.png");
         resumeBtn = new Texture("resume.png");
         ourWorld = oW;
+        level = l;
         debuggerRenderer = dR;
     }
 
@@ -74,8 +78,19 @@ public class PauseScreen implements Screen {
                 dispose();
             }
             if (coordinatesMouseInp.x > 350 && coordinatesMouseInp.x < 450 && coordinatesMouseInp.y > 170 && coordinatesMouseInp.y < 200){
-                gameInstance.setScreen(new GameScreen(gameInstance,ourWorld,debuggerRenderer));
-                dispose();
+                if(level == "level1"){
+                    gameInstance.setScreen(new GameScreen(gameInstance,ourWorld,debuggerRenderer));
+                    dispose();
+                }else if(level == "level2"){
+                    gameInstance.setScreen(new GameScreen1(gameInstance,ourWorld,debuggerRenderer));
+                    dispose();
+                }else if(level == "level3"){
+                    gameInstance.setScreen(new GameScreen2(gameInstance,ourWorld,debuggerRenderer));
+                    dispose();
+                }else{
+                    gameInstance.setScreen(new GameScreen(gameInstance,ourWorld,debuggerRenderer));
+                    dispose();
+                }
             }
             if (coordinatesMouseInp.x > 350 && coordinatesMouseInp.x < 450 && coordinatesMouseInp.y > 130 && coordinatesMouseInp.y < 160){
                 gameInstance.setScreen(new MainMenu(gameInstance,ourWorld,debuggerRenderer));

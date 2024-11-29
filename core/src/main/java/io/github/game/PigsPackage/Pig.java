@@ -20,8 +20,8 @@ public abstract class Pig {
     private int hitPoint;
     private boolean effected;
     private World ourWorld;
-
-    public Pig(Texture aa, float a, float b, float c, float d, Mygame e, int h, World world) {
+    private int reward;
+    public Pig(Texture aa, float a, float b, float c, float d, Mygame e, int h, World world,int r) {
         imageOfPig = aa;
         positionX = a;
         positionY = b;
@@ -32,6 +32,7 @@ public abstract class Pig {
         hitPoint = h;
         effected = false;
         state = "alive";
+        reward = r;
 
 
         CircleShape shapePig = new CircleShape();
@@ -97,6 +98,9 @@ public abstract class Pig {
         if(hitPoint <= 0){
             state = "destroy";
         }
+    }
+    public int getReward(){
+        return reward;
     }
 }
 

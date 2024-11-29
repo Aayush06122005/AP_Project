@@ -1,6 +1,5 @@
 package io.github.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -27,7 +26,7 @@ import io.github.game.PigsPackage.Pig3;
 
 import java.util.ArrayList;
 
-public class GameScreen implements Screen {
+public class GameScreen2 implements Screen {
     private static final float FIXED_TIMESTEP = 1 / 60f;  // Fixed timestep (60 updates per second)
     private float accumulator = 0f;
     private Texture bgimgSpace;
@@ -69,7 +68,7 @@ public class GameScreen implements Screen {
     private ArrayList<Pig> allPigs;
     private BitmapFont font;
     private int score;
-    public GameScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR) {
+    public GameScreen2(final Mygame gameI,World oW, Box2DDebugRenderer dR) {
         allBirds = new ArrayList<>();
         allPigs = new ArrayList<>();
         myCamera = new OrthographicCamera();
@@ -237,7 +236,7 @@ public class GameScreen implements Screen {
             if((Gdx.input.isTouched())) {
 
                 dragging(maxRange, loadedBird);
-              //  System.out.println("Touching");
+                //  System.out.println("Touching");
 
             }else{
                 Vector2 catapultCenter = new Vector2((catapultInst.launchBound().x + catapultInst.launchBound().width/2),(catapultInst.launchBound().y + catapultInst.launchBound().height/2));
@@ -264,7 +263,7 @@ public class GameScreen implements Screen {
                 deathhandler(launchedBird);
             }
 
-                handleBirdCollison(launchedBird);
+            handleBirdCollison(launchedBird);
 
 
 
@@ -275,7 +274,7 @@ public class GameScreen implements Screen {
         }
 //        MassData data = null;
 //        allBirds.get(0).getBirdBody().setMassData(data);
-      //System.out.println(allBirds.get(3).getBirdBody().getMass());
+        //System.out.println(allBirds.get(3).getBirdBody().getMass());
         if(block != null && block.getHealth() <= 0){
             deathhandler1(block);
         }
@@ -299,7 +298,6 @@ public class GameScreen implements Screen {
         }
         if (!allPigs.isEmpty() && allBirds.isEmpty()) {
             gameInstance.setScreen(new LosingScreen(gameInstance,ourWorld,debuggerRenderer,score)); // replace with your actual settings screen
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen2(gameInstance,ourWorld,debuggerRenderer));
             dispose();
         }
 
@@ -324,7 +322,7 @@ public class GameScreen implements Screen {
             Vector3 coordinatesMouseInp = new Vector3(x, y, 0);
             myCamera.unproject(coordinatesMouseInp);
             if (coordinatesMouseInp.x > 5 && coordinatesMouseInp.x < 45 && coordinatesMouseInp.y > ourViewPort.getWorldHeight() - 50 && coordinatesMouseInp.y < ourViewPort.getWorldHeight() - 10) {
-                gameInstance.setScreen(new PauseScreen(gameInstance,ourWorld,debuggerRenderer,"level1")); // replace with your actual settings screen
+                gameInstance.setScreen(new PauseScreen(gameInstance,ourWorld,debuggerRenderer,"level3")); // replace with your actual settings screen
                 dispose();
             }
         }
@@ -340,9 +338,9 @@ public class GameScreen implements Screen {
     private void deathhandler(Birds b) {
 //        if(obj.getClass().getSimpleName() == "Birds"){
 //            Birds b = (Birds) obj;
-            ourWorld.destroyBody(b.getBirdBody());
-            b.disposeBird();
-            allBirds.remove(b);
+        ourWorld.destroyBody(b.getBirdBody());
+        b.disposeBird();
+        allBirds.remove(b);
 //        } else if (obj.getClass().getSimpleName() == "Block") {
 //            Block bl = (Block) obj;
 //            ourWorld.destroyBody(bl.getBody());
@@ -468,7 +466,7 @@ public class GameScreen implements Screen {
     public static Boolean birdToched(Birds b,OrthographicCamera myCamera){
         Vector2 pos = b.getBirdBody().getPosition();
         Circle boundsToCheck = b.birdBound();
-;
+        ;
         Vector3 worldClick = Player.getInput(myCamera);
         if(worldClick == null){
             return false;

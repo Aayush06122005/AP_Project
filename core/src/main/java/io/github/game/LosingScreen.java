@@ -3,6 +3,7 @@ package io.github.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -23,8 +24,10 @@ public class LosingScreen  implements Screen {
     // private Texture Staricon;
     private World ourWorld;
     private Box2DDebugRenderer debuggerRenderer;
-
-    public LosingScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR){
+    private BitmapFont font;
+    private int score;
+    private String text;
+    public LosingScreen(final Mygame gameI,World oW, Box2DDebugRenderer dR,int s){
         this.gameInstance = gameI;
         myCamera = new OrthographicCamera();
         myCamera.setToOrtho(false,800,400);
@@ -34,9 +37,14 @@ public class LosingScreen  implements Screen {
         ourViewPort = new FitViewport(800, 400, myCamera);
         crossbtn=new Texture("cross.png");
         // Staricon=new Texture("starIcon.png");
-        Losingimg=new Texture("youLose.png");
+//        Losingimg=new Texture("youLose.png");
         ourWorld = oW;
         debuggerRenderer = dR;
+        score = s;
+        text = "You Lose !!";
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
+        font.getData().setScale(2);
     }
 
     @Override
@@ -53,9 +61,10 @@ public class LosingScreen  implements Screen {
 //        gameInstance.textWriter.draw(gameInstance.ourSpriteBatch, "Tap anywhere to begin!", 325, 70);
         // gameInstance.ourSpriteBatch.draw(Staricon,450,200 ,(ourViewPort.getWorldWidth())/10,(ourViewPort.getWorldHeight())/6);
 
-        gameInstance.ourSpriteBatch.draw(Losingimg,240,170 ,2*(ourViewPort.getWorldWidth())/5,2*(ourViewPort.getWorldHeight())/6);
+//        gameInstance.ourSpriteBatch.draw(Losingimg,240,170 ,2*(ourViewPort.getWorldWidth())/5,2*(ourViewPort.getWorldHeight())/6);
 
-
+        font.draw(gameInstance.ourSpriteBatch, text, 250, 300);
+        font.draw(gameInstance.ourSpriteBatch, "Your Score: "+score, 200, 200);
 //
         gameInstance.ourSpriteBatch.end();
         if (Gdx.input.isTouched()) {
